@@ -24,15 +24,20 @@ Date: 2.16.26
 */
 
 // the setup function runs once when you press reset or power the board
-void setup() {
+void setup() {  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(10, OUTPUT);
+    pinMode(11, OUTPUT);
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(10, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(300);                      // wait for a second
-  digitalWrite(10, LOW);   // turn the LED off by making the voltage LOW
-  delay(200);                      // wait for a second
-}
+digitalWrite(10, HIGH); // LED on pin 10 ON
+  digitalWrite(11, LOW);  // LED on pin 11 OFF
+  delay(200);
+
+  digitalWrite(10, LOW);  // LED on pin 10 OFF
+  digitalWrite(11, HIGH); // LED on pin 11 ON
+  delay(300);}
+
