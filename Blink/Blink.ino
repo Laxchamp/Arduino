@@ -23,21 +23,48 @@ Date: 2.16.26
   https://docs.arduino.cc/built-in-examples/basics/Blink/
 */
 
-// the setup function runs once when you press reset or power the board
-void setup() {  pinMode(10, OUTPUT);
-  pinMode(11, OUTPUT);
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(10, OUTPUT);
-    pinMode(11, OUTPUT);
+// ----- Pin assignments -----
+const int LED_LEFT = 10;     // Left LED
+const int LED_RIGHT = 11;    // Right LED
+const int SPEAKER = 9;       // Piezo speaker
+
+// ----- Siren settings (slower + deeper) -----
+const int LOW_FREQ = 500;    // Deeper low pitch
+const int HIGH_FREQ = 1000;  // Higher peak pitch
+const int STEP_DELAY = 8;    // Slower siren sweep
+const int FREQ_STEP = 10;    // Smooth pitch change
+
+// Runs once when the Arduino starts
+void setup() {
+  pinMode(LED_LEFT, OUTPUT);
+  pinMode(LED_RIGHT, OUTPUT);
+  pinMode(SPEAKER, OUTPUT);
 }
 
-// the loop function runs over and over again forever
+// Runs forever
 void loop() {
-digitalWrite(10, HIGH); // LED on pin 10 ON
-  digitalWrite(11, LOW);  // LED on pin 11 OFF
-  delay(200);
 
-  digitalWrite(10, LOW);  // LED on pin 10 OFF
-  digitalWrite(11, HIGH); // LED on pin 11 ON
-  delay(300);}
+  // 🔵 Left light ON, right OFF
+  digitalWrite(LED_LEFT, HIGH);
+  digitalWrite(LED_RIGHT, LOW);
 
+  // Siren pitch goes UP (WEE)
+  for (int freq = LOW_FREQ; freq <= HIGH_FREQ; freq += FREQ_STEP) {
+    tone(SPEAKER, freq);
+    delay(STEP_DELAY);
+  }
+
+  delay(300);  // Pause for realism
+
+  // 🔴 Right light ON, left OFF
+  digitalWrite(LED_LEFT, LOW);
+  digitalWrite(LED_RIGHT, HIGH);
+
+  // Siren pitch goes DOWN (WOO)
+  for (int freq = HIGH_FREQ; freq >= LOW_FREQ; freq -= FREQ_STEP) {
+    tone(SPEAKER, freq);
+    delay(STEP_DELAY);
+  }
+
+  delay(300);  // Pause before repeating
+}
