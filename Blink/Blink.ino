@@ -24,47 +24,64 @@ Date: 2.16.26
 */
 
 // ----- Pin assignments -----
-const int LED_LEFT = 10;     // Left LED
-const int LED_RIGHT = 11;    // Right LED
-const int SPEAKER = 9;       // Piezo speaker
+const int LED_LEFT   = 10;   // Left LED
+const int LED_RIGHT  = 11;   // Right LED
+const int LED_CENTER = 3;    // Center LED
+const int SPEAKER    = 9;    // Piezo speaker
 
-// ----- Siren settings (slower + deeper) -----
-const int LOW_FREQ = 500;    // Deeper low pitch
-const int HIGH_FREQ = 1000;  // Higher peak pitch
-const int STEP_DELAY = 8;    // Slower siren sweep
-const int FREQ_STEP = 10;    // Smooth pitch change
+// Alien sound ranges
+const int ALIEN_LOW  = 300;   // Deep alien tone
+const int ALIEN_HIGH = 1800;  // Sharp alien chirp
 
-// Runs once when the Arduino starts
 void setup() {
   pinMode(LED_LEFT, OUTPUT);
   pinMode(LED_RIGHT, OUTPUT);
+  pinMode(LED_CENTER, OUTPUT);
   pinMode(SPEAKER, OUTPUT);
 }
 
-// Runs forever
+// Runs forever — alien transmission loop
 void loop() {
 
-  // 🔵 Left light ON, right OFF
-  digitalWrite(LED_LEFT, HIGH);
-  digitalWrite(LED_RIGHT, LOW);
+  // 👽 Phase 1: Alien heartbeat pulse
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(LED_CENTER, HIGH);
+    tone(SPEAKER, 450);
+    delay(120);
 
-  // Siren pitch goes UP (WEE)
-  for (int freq = LOW_FREQ; freq <= HIGH_FREQ; freq += FREQ_STEP) {
-    tone(SPEAKER, freq);
-    delay(STEP_DELAY);
+    digitalWrite(LED_CENTER, LOW);
+    noTone(SPEAKER);
+    delay(80);
   }
 
-  delay(300);  // Pause for realism
+  // 👾 Phase 2: Random alien chatter
+  for (int i = 0; i < 12; i++) {
+    int alienTone = random(ALIEN_LOW, ALIEN_HIGH);
 
-  // 🔴 Right light ON, left OFF
-  digitalWrite(LED_LEFT, LOW);
+    digitalWrite(LED_LEFT, random(0, 2));
+    digitalWrite(LED_RIGHT, random(0, 2));
+    digitalWrite(LED_CENTER, random(0, 2));
+
+    tone(SPEAKER, alienTone);
+    delay(random(30, 90));
+  }
+
+  noTone(SPEAKER);
+
+  // 🛸 Phase 3: UFO power-up sweep
+  digitalWrite(LED_LEFT, HIGH);
+  digitalWrite(LED_CENTER, HIGH);
   digitalWrite(LED_RIGHT, HIGH);
 
-  // Siren pitch goes DOWN (WOO)
-  for (int freq = HIGH_FREQ; freq >= LOW_FREQ; freq -= FREQ_STEP) {
+  for (int freq = 600; freq <= 1600; freq += 25) {
     tone(SPEAKER, freq);
-    delay(STEP_DELAY);
+    delay(12);
   }
 
-  delay(300);  // Pause before repeating
+  // ✨ Transmission pause
+  digitalWrite(LED_LEFT, LOW);
+  digitalWrite(LED_CENTER, LOW);
+  digitalWrite(LED_RIGHT, LOW);
+  noTone(SPEAKER);
+  delay(300);
 }
