@@ -22,66 +22,29 @@ Date: 2.16.26
 
   https://docs.arduino.cc/built-in-examples/basics/Blink/
 */
-
-// ----- Pin assignments -----
-const int LED_LEFT   = 10;   // Left LED
-const int LED_RIGHT  = 11;   // Right LED
-const int LED_CENTER = 3;    // Center LED
-const int SPEAKER    = 9;    // Piezo speaker
-
-// Alien sound ranges
-const int ALIEN_LOW  = 300;   // Deep alien tone
-const int ALIEN_HIGH = 1800;  // Sharp alien chirp
+int laserPin = 10;
+int sensorPin = 6;
+int ledPin = 11;
 
 void setup() {
-  pinMode(LED_LEFT, OUTPUT);
-  pinMode(LED_RIGHT, OUTPUT);
-  pinMode(LED_CENTER, OUTPUT);
-  pinMode(SPEAKER, OUTPUT);
+  pinMode(laserPin, OUTPUT);
+  pinMode(sensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+
+  digitalWrite(laserPin, HIGH); // turn laser ON
 }
 
-// Runs forever — alien transmission loop
 void loop() {
+  int sensorState = digitalRead(sensorPin);
 
-  // 👽 Phase 1: Alien heartbeat pulse
-  for (int i = 0; i < 4; i++) {
-    digitalWrite(LED_CENTER, HIGH);
-    tone(SPEAKER, 450);
-    delay(120);
-
-    digitalWrite(LED_CENTER, LOW);
-    noTone(SPEAKER);
-    delay(80);
+  if (sensorState == LOW) {
+    // Laser beam broken → flicker LED
+    digitalWrite(ledPin, HIGH);
+    delay(200);
+    digitalWrite(ledPin, LOW);
+    delay(200);
+  } else {
+    // Laser intact → LED off
+    digitalWrite(ledPin, LOW);
   }
-
-  // 👾 Phase 2: Random alien chatter
-  for (int i = 0; i < 12; i++) {
-    int alienTone = random(ALIEN_LOW, ALIEN_HIGH);
-
-    digitalWrite(LED_LEFT, random(0, 2));
-    digitalWrite(LED_RIGHT, random(0, 2));
-    digitalWrite(LED_CENTER, random(0, 2));
-
-    tone(SPEAKER, alienTone);
-    delay(random(30, 90));
-  }
-
-  noTone(SPEAKER);
-
-  // 🛸 Phase 3: UFO power-up sweep
-  digitalWrite(LED_LEFT, HIGH);
-  digitalWrite(LED_CENTER, HIGH);
-  digitalWrite(LED_RIGHT, HIGH);
-
-  for (int freq = 600; freq <= 1600; freq += 25) {
-    tone(SPEAKER, freq);
-    delay(12);
-  }
-
-  // ✨ Transmission pause
-  digitalWrite(LED_LEFT, LOW);
-  digitalWrite(LED_CENTER, LOW);
-  digitalWrite(LED_RIGHT, LOW);
-  noTone(SPEAKER);
-  delay(300);
 }
